@@ -1,0 +1,42 @@
+services:
+  patient-service-db:
+    image: postgres:16-alpine
+    container_name: patient-service-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5000:5432" #puerto bd desde mi pc: puerto bd desde el contenedor
+    networks:
+      - internal
+    volumes:
+      - "C:/Users/EDWIN GARCIA/Documents/VALENTINA/PERSONAL/Proyectos/Microservicios/db_folder:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  patient-service:
+    build: . #imagen creada con el comando "docker compose up --build -d"
+    container_name: patient-service
+    ports:
+      - "4000:4000" # puerto app desde mi pc: puerto app desde el contenedor
+    environment:
+      #uso de credenciales para acceder al servicio de la bd
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://patient-service-db:5432/db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_SQL_INIT_MODE=always
+    networks:
+      - internal
+    depends_on:
+      patient-service-db:
+        condition: service_healthy
+
+networks:
+  internal:
+    driver: bridge
