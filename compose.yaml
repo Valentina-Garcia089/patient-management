@@ -20,7 +20,10 @@ services:
 
 
   patient-service:
-    build: . #imagen creada con el comando "docker compose up --build -d"
+    #imagen creada con el comando "docker compose up --build -d"
+    build:
+      context: .
+      dockerfile: patient-service/Dockerfile
     container_name: patient-service
     ports:
       - "4000:4000" # puerto app desde mi pc: puerto app desde el contenedor
@@ -31,11 +34,25 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_SQL_INIT_MODE=always
+      - BILLING_SERVICE_ADDRESS=billing-service
+      - BILLING_SERVICE_GRPC_PORT=9001
     networks:
       - internal
     depends_on:
       patient-service-db:
         condition: service_healthy
+
+
+  billing-service:
+    build:
+      context: .
+      dockerfile: billing-service/Dockerfile
+    container_name: billing-service
+    ports:
+      - "4001:4001"
+      - "9001:9001"
+    networks:
+      - internal
 
 networks:
   internal:
