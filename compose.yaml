@@ -36,11 +36,26 @@ services:
       - SPRING_SQL_INIT_MODE=always
       - BILLING_SERVICE_ADDRESS=billing-service
       - BILLING_SERVICE_GRPC_PORT=9001
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - internal
     depends_on:
       patient-service-db:
         condition: service_healthy
+
+
+
+
+  billing-service:
+    build:
+      context: .
+      dockerfile: billing-service/Dockerfile
+    container_name: billing-service
+    ports:
+      - "4001:4001"
+      - "9001:9001"
+    networks:
+      - internal
 
 
 
@@ -72,17 +87,6 @@ services:
     networks:
       - internal
 
-
-  billing-service:
-    build:
-      context: .
-      dockerfile: billing-service/Dockerfile
-    container_name: billing-service
-    ports:
-      - "4001:4001"
-      - "9001:9001"
-    networks:
-      - internal
 
 networks:
   internal:

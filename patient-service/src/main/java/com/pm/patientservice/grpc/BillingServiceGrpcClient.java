@@ -26,10 +26,12 @@ public class BillingServiceGrpcClient {
 
         log.info("Connecting to BillingService at {}:{}", serverAddress, serverPort);
 
+        //apuntar a la dirección del servidor
         ManagedChannel channel = ManagedChannelBuilder.forAddress(serverAddress, serverPort)
                 .usePlaintext()
                 .build();
 
+        //se crea el cliente que apunta al servidor
         blockingStub = BillingServiceGrpc.newBlockingStub(channel);
     }
 
