@@ -53,7 +53,7 @@ services:
     container_name: billing-service
     ports:
       - "4001:4001"
-      - "9001:9001"
+      - "9001:9001" #gRPC
     networks:
       - internal
 
@@ -84,6 +84,21 @@ services:
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - internal
+
+
+
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: analytics-service/Dockerfile
+    container_name: analytics-service
+    ports:
+      - "4002:4002"
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     networks:
       - internal
 
