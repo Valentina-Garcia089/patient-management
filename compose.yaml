@@ -19,6 +19,27 @@ services:
       retries: 5
 
 
+
+  auth-service-db:
+    image: postgres:16-alpine
+    container_name: auth-service-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5001:5432"
+    networks:
+      - internal
+    volumes:
+      - "C:/Users/EDWIN GARCIA/Documents/VALENTINA/PERSONAL/Proyectos/Microservicios/auth_db_folder:/var/lib/postgresql/data"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
   patient-service:
     #imagen creada con el comando "docker compose up --build -d"
     build:
@@ -112,6 +133,29 @@ services:
       - "4004:4004"
     networks:
       - internal
+
+
+
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: auth-service
+    ports:
+      - "4005:4005"
+    environment:
+      #uso de credenciales para acceder al servicio de la bd
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-service-db:5432/db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_SQL_INIT_MODE=always
+    networks:
+      - internal
+    depends_on:
+      auth-service-db:
+        condition: service_healthy
 
 
 networks:
