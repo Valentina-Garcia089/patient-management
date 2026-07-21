@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.SignatureException;
-import java.util.Base64;
 import java.util.Date;
 
 // esta es la clase que se encargará de generar y validar los tokens JWT

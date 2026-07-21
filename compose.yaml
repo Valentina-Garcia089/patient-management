@@ -142,8 +142,6 @@ services:
       context: .
       dockerfile: auth-service/Dockerfile
     container_name: auth-service
-    ports:
-      - "4005:4005"
     environment:
       #uso de credenciales para acceder al servicio de la bd
       - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-service-db:5432/db
