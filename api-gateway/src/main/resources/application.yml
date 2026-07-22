@@ -5,6 +5,17 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: auth-service-route
+          uri: http://auth-service:4005
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+            ## la ruta a escribir es: http://auth-service:4005/auth/**
+
+
+
+
         - id: patient-service-route
           uri: http://patient-service:4000
           predicates:
@@ -24,14 +35,12 @@ spring:
             - RewritePath=/api-docs/patients,/v3/api-docs
             ## la ruta a escribir es: http://patient-service:4000/api-docs/patients
 
-
-
-        - id: auth-service-route
+        - id: api-docs-auth-route
           uri: http://auth-service:4005
           predicates:
-            - Path=/auth/**
+            - Path=/api-docs/auth
           filters:
-            - StripPrefix=1
-            ## la ruta a escribir es: http://auth-service:4005/auth/**
+            - RewritePath=/api-docs/auth,/v3/api-docs
+            ## la ruta a escribir es: http://auth-service:4005/api-docs/auth
 
 
