@@ -36,6 +36,28 @@ public class AuthIntegrationTest {
                 .response(); //esto es para extraer la respuesta del login
 
 
-        System.out.println("Generated Token: " + response.jsonPath().getString(" token") );
+        System.out.println("Generated Token: " + response.jsonPath().getString("token") );
+    }
+
+
+
+
+    @Test
+    public void shouldReturnUnauthorizedOnInvalidLogin() {
+        String loginPayload = """
+                {
+                    "email": "invalid_user_test@test.com",
+                    "password": "wrongpassword"
+                }
+                """;
+
+        // esto es el body que se envia al endpoint de login para obtener el token
+        given()
+                .contentType("application/json")
+                .body(loginPayload)
+                .when()
+                .post("/auth/login") // esto es para hacer login y obtener el token
+                .then()
+                .statusCode(401);
     }
 }
